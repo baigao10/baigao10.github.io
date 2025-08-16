@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(45deg, #0f0f23, #1a1a2e, #16213e, #0f3460);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* 3D星空背景 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        /* 流星动画 */
+        .meteor {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: linear-gradient(45deg, #fff, #00f5ff);
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00f5ff;
+            animation: meteor 4s linear infinite;
+        }
+        
+        @keyframes meteor {
+            0% {
+                transform: translateX(-100px) translateY(-100px);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateX(100vw) translateY(100vh);
+                opacity: 0;
+            }
+        }
+        
+        /* 浮动粒子 */
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #00f5ff, #ff006e);
+            border-radius: 50%;
+            animation: floatUp 8s ease-in-out infinite;
+        }
+        
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 主容器 */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-section {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .glass-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .glass-container:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+        
+        .glass-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 245, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: hologram 4s linear infinite;
+        }
+        
+        @keyframes hologram {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        h1 {
+            font-size: 4em;
+            font-weight: 900;
+            background: linear-gradient(45deg, #00f5ff, #ff006e, #ffbe0b, #8338ec);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textGradient 3s ease infinite;
+            text-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes textGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .subtitle {
+            font-size: 1.5em;
+            color: #00f5ff;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(0, 245, 255, 0.3); }
+            to { text-shadow: 0 0 30px rgba(0, 245, 255, 0.8), 0 0 40px rgba(0, 245, 255, 0.5); }
+        }
+        
+        /* 3D状态指示器 */
+        .status-3d {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(45deg, #00f5ff, #ff006e);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 50px;
+            margin: 30px 0;
+            font-weight: bold;
+            font-size: 1.2em;
+            box-shadow: 0 15px 35px rgba(0, 245, 255, 0.4);
+            position: relative;
+            z-index: 1;
+            transform-style: preserve-3d;
+            animation: float3D 3s ease-in-out infinite;
+        }
+        
+        @keyframes float3D {
+            0%, 100% { transform: translateY(0) rotateX(0deg); }
+            50% { transform: translateY(-10px) rotateX(5deg); }
+        }
+        
+        .pulse-ring {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            margin-right: 15px;
+            position: relative;
+            animation: pulseRing 2s ease-in-out infinite;
+        }
+        
+        .pulse-ring::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: innerPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulseRing {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.7; }
+        }
+        
+        @keyframes innerPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(0.8); }
+        }
+        
+        /* 科普卡片网格 */
+        .science-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 50px 0;
+        }
+        
+        .science-card {
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.1), rgba(255, 0, 110, 0.1));
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .science-card:hover {
+            transform: translateY(-15px) rotateY(5deg) rotateX(5deg);
+            box-shadow: 0 25px 50px rgba(0, 245, 255, 0.3);
+            border-color: #00f5ff;
+        }
+        
+        .science-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .science-card:hover::before {
+            left: 100%;
+        }
+        
+        .card-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            display: block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .card-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #00f5ff;
+            margin-bottom: 15px;
+        }
+        
+        .card-description {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .learn-more-btn {
+            background: linear-gradient(45deg, #00f5ff, #ff006e);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .learn-more-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 245, 255, 0.4);
+        }
+        
+        .learn-more-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .learn-more-btn:hover::before {
+            left: 100%;
+        }
+        
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, rgba(15, 15, 35, 0.95), rgba(22, 33, 62, 0.95));
+            margin: 5% auto;
+            padding: 40px;
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 20px;
+            width: 80%;
+            max-width: 600px;
+            color: white;
+            position: relative;
+            animation: modalSlideIn 0.5s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .close {
+            color: #00f5ff;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close:hover {
+            color: #ff006e;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .time-display {
+            background: rgba(0, 245, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            color: #00f5ff;
+            font-weight: 600;
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            display: inline-block;
+            animation: digitalGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes digitalGlow {
+            from { box-shadow: 0 0 10px rgba(0, 245, 255, 0.3); }
+            to { box-shadow: 0 0 20px rgba(0, 245, 255, 0.6), 0 0 30px rgba(0, 245, 255, 0.4); }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5em; }
+            .science-grid { grid-template-columns: 1fr; }
+            .glass-container { margin: 10px; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 3D星空背景 -->
+    <div class="stars"></div>
+    
+    <!-- 浮动粒子 -->
+    <div class="floating-particles"></div>
+    
+    <div class="main-container">
+        <!-- 英雄区域 -->
+        <div class="hero-section">
+            <div class="glass-container">
+                <h1>🌟 FUCK YOU</h1>
+                <p class="subtitle">我是子标题</p>
+                
+                <div class="status-3d">
+                    <div class="pulse-ring"></div>
+                    请输入文本. 🚀
+                </div>
+            </div>
+        </div>
+        
+        <!-- 科普卡片网格 -->
+        <div class="science-grid">
+            <div class="science-card" onclick="openModal('ai-modal')">
+                <span class="card-icon">🤖</span>
+                <h3 class="card-title">人工智能</h3>
+                <p class="card-description">探索AI的神奇世界，了解机器学习、深度学习和神经网络的奥秘</p>
+                <button class="learn-more-btn">深入了解</button>
+            </div>
+            
+            <div class="science-card" onclick="openModal('quantum-modal')">
+                <span class="card-icon">⚛️</span>
+                <h3 class="card-title">量子计算</h3>
+                <p class="card-description">量子比特的超能力</p>
+                <button class="learn-more-btn">深入了解</button>
+            </div>
+            
+            <div class="science-card" onclick="openModal('space-modal')">
+                <span class="card-icon">🚀</span>
+                <h3 class="card-title">太空探索</h3>
+                <p class="card-description">从火星殖民到星际旅行，人类征服宇宙的伟大征程</p>
+                <button class="learn-more-btn">深入了解</button>
+            </div>
+            
+            <div class="science-card" onclick="openModal('bio-modal')">
+                <span class="card-icon">🧬</span>
+                <h3 class="card-title">生物科技</h3>
+                <p class="card-description">基因编辑、细胞治疗，生命科学的前沿突破</p>
+                <button class="learn-more-btn">深入了解</button>
+            </div>
+            
+            <div class="science-card" onclick="openModal('energy-modal')">
+                <span class="card-icon">⚡</span>
+                <h3 class="card-title">新能源</h3>
+                <p class="card-description">太阳能、风能、核聚变，清洁能源的美好未来</p>
+                <button class="learn-more-btn">深入了解</button>
+            </div>
+            
+            <div class="science-card" onclick="openModal('nano-modal')">
+                <span class="card-icon">🔬</span>
+                <h3 class="card-title">纳米技术</h3>
+                <p class="card-description">微观世界的巨大力量，纳米材料改变世界</p>
+                <button class="learn-more-btn">深入了解</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="time-display">
+                🕐 <span id="current-time"></span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 模态框 -->
+    <div id="ai-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('ai-modal')">&times;</span>
+            <h2>🤖 人工智能的奇妙世界</h2>
+            <p>人工智能(AI)是计算机科学的一个分支，致力于创造能够执行通常需要人类智能的任务的系统。</p>
+            <h3>主要领域：</h3>
+            <ul>
+                <li><strong>机器学习</strong>：让计算机从数据中学习</li>
+                <li><strong>深度学习</strong>：模拟人脑神经网络</li>
+                <li><strong>自然语言处理</strong>：理解和生成人类语言</li>
+                <li><strong>计算机视觉</strong>：让机器"看懂"图像</li>
+            </ul>
+            <p>AI正在改变我们的生活方式，从智能手机到自动驾驶汽车，无处不在！</p>
+        </div>
+    </div>
+    
+    <div id="quantum-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('quantum-modal')">&times;</span>
+            <h2>⚛️ 量子计算的神奇力量</h2>
+            <p>量子计算利用量子力学原理，使用量子比特进行计算，具有超越传统计算机的潜力。</p>
+            <h3>核心概念：</h3>
+            <ul>
+                <li><strong>量子叠加</strong>：一个量子比特可以同时处于0和1状态</li>
+                <li><strong>量子纠缠</strong>：量子比特之间的神秘连接</li>
+                <li><strong>量子并行</strong>：同时处理多种可能性</li>
+            </ul>
+            <p>量子计算机将在密码学、药物发现、金融建模等领域带来革命性突破！</p>
+        </div>
+    </div>
+    
+    <div id="space-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('space-modal')">&times;</span>
+            <h2>🚀 太空探索的伟大征程</h2>
+            <p>人类对宇宙的探索从未停止，从登月到火星探测，我们正在书写星际文明的新篇章。</p>
+            <h3>重要里程碑：</h3>
+            <ul>
+                <li><strong>阿波罗计划</strong>：人类首次登月</li>
+                <li><strong>国际空间站</strong>：太空中的科研基地</li>
+                <li><strong>火星探测</strong>：寻找生命的痕迹</li>
+                <li><strong>商业航天</strong>：SpaceX等公司的创新</li>
+            </ul>
+            <p>未来我们将建立月球基地，殖民火星，甚至探索更遥远的星系！</p>
+        </div>
+    </div>
+    
+    <div id="bio-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('bio-modal')">&times;</span>
+            <h2>🧬 生物科技的前沿突破</h2>
+            <p>生物技术正在重新定义生命科学，从基因治疗到再生医学，为人类健康带来新希望。</p>
+            <h3>关键技术：</h3>
+            <ul>
+                <li><strong>CRISPR基因编辑</strong>：精确修改DNA</li>
+                <li><strong>干细胞治疗</strong>：修复受损组织</li>
+                <li><strong>免疫疗法</strong>：利用免疫系统对抗疾病</li>
+                <li><strong>合成生物学</strong>：设计新的生物系统</li>
+            </ul>
+            <p>这些技术将帮助我们治愈癌症、延缓衰老，甚至创造新的生命形式！</p>
+        </div>
+    </div>
+    
+    <div id="energy-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('energy-modal')">&times;</span>
+            <h2>⚡ 新能源的美好未来</h2>
+            <p>清洁能源技术正在改变我们获取和使用能源的方式，为可持续发展铺平道路。</p>
+            <h3>主要技术：</h3>
+            <ul>
+                <li><strong>太阳能</strong>：利用太阳光发电</li>
+                <li><strong>风能</strong>：风力发电技术</li>
+                <li><strong>核聚变</strong>：模拟太阳的能源</li>
+                <li><strong>储能技术</strong>：高效电池系统</li>
+            </ul>
+            <p>新能源将帮助我们实现碳中和，保护地球环境，创造绿色未来！</p>
+        </div>
+    </div>
+    
+    <div id="nano-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('nano-modal')">&times;</span>
+            <h2>🔬 纳米技术的微观奇迹</h2>
+            <p>纳米技术在原子和分子层面操作物质，创造出具有独特性质的新材料和设备。</p>
+            <h3>应用领域：</h3>
+            <ul>
+                <li><strong>纳米医学</strong>：精准药物递送</li>
+                <li><strong>纳米材料</strong>：超强、超轻材料</li>
+                <li><strong>纳米电子</strong>：更小更快的芯片</li>
+                <li><strong>纳米制造</strong>：分子级精密制造</li>
+            </ul>
+            <p>纳米技术将在医疗、电子、材料等领域带来革命性变化！</p>
+        </div>
+    </div>
+    
+    <script>
+        // 创建3D星空背景
+        function createStars() {
+            const starsContainer = document.querySelector('.stars');
+            const starCount = 200;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // 创建流星
+        function createMeteors() {
+            const starsContainer = document.querySelector('.stars');
+            
+            setInterval(() => {
+                if (Math.random() < 0.3) { // 30%概率生成流星
+                    const meteor = document.createElement('div');
+                    meteor.className = 'meteor';
+                    meteor.style.left = Math.random() * 100 + '%';
+                    meteor.style.top = Math.random() * 100 + '%';
+                    meteor.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    starsContainer.appendChild(meteor);
+                    
+                    // 4秒后移除流星
+                    setTimeout(() => {
+                        if (meteor.parentNode) {
+                            meteor.parentNode.removeChild(meteor);
+                        }
+                    }, 4000);
+                }
+            }, 2000);
+        }
+        
+        // 创建浮动粒子
+        function createFloatingParticles() {
+            const particlesContainer = document.querySelector('.floating-particles');
+            
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = '0s';
+                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                particlesContainer.appendChild(particle);
+                
+                // 8秒后移除粒子
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, 8000);
+            }, 500);
+        }
+        
+        // 显示当前时间
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('current-time').textContent = timeString;
+        }
+        
+        // 打开模态框
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // 防止背景滚动
+        }
+        
+        // 关闭模态框
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // 恢复滚动
+        }
+        
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        }
+        
+        // 添加鼠标跟踪效果
+        function addMouseTracker() {
+            let mouseX = 0, mouseY = 0;
+            
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                
+                // 让科普卡片跟随鼠标轻微倾斜
+                const cards = document.querySelectorAll('.science-card');
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const cardCenterX = rect.left + rect.width / 2;
+                    const cardCenterY = rect.top + rect.height / 2;
+                    
+                    const deltaX = (mouseX - cardCenterX) / 50;
+                    const deltaY = (mouseY - cardCenterY) / 50;
+                    
+                    if (!card.matches(':hover')) {
+                        card.style.transform = `perspective(1000px) rotateY(${deltaX}deg) rotateX(${-deltaY}deg)`;
+                    }
+                });
+            });
+        }
+        
+        // 添加键盘快捷键
+        function addKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    // ESC键关闭所有模态框
+                    const modals = document.querySelectorAll('.modal');
+                    modals.forEach(modal => {
+                        modal.style.display = 'none';
+                    });
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        }
+        
+        // 添加滚动动画
+        function addScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            // 观察所有科普卡片
+            const cards = document.querySelectorAll('.science-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(50px)';
+                card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                observer.observe(card);
+            });
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 创建所有动画效果
+            createStars();
+            createMeteors();
+            createFloatingParticles();
+            
+            // 更新时间
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            // 添加交互效果
+            addMouseTracker();
+            addKeyboardShortcuts();
+            addScrollAnimations();
+            
+            // 添加卡片点击音效（如果需要）
+            const cards = document.querySelectorAll('.science-card');
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    // 添加点击反馈
+                    card.style.transform += ' scale(0.95)';
+                    setTimeout(() => {
+                        card.style.transform = card.style.transform.replace(' scale(0.95)', '');
+                    }, 150);
+                });
+            });
+            
+            // 添加页面加载动画
+            const heroSection = document.querySelector('.hero-section');
+            heroSection.style.opacity = '0';
+            heroSection.style.transform = 'translateY(-50px)';
+            
+            setTimeout(() => {
+                heroSection.style.transition = 'opacity 1s ease, transform 1s ease';
+                heroSection.style.opacity = '1';
+                heroSection.style.transform = 'translateY(0)';
+            }, 100);
+            
+            console.log('🌟 超炫酷科技展示平台已启动！');
+            console.log('💝 专为杳杳定制的贴心工具 ✨');
+        });
+    </script>
+</body>
+</html>
